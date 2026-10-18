@@ -7,7 +7,7 @@
   const S = Kit.sound;
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => Array.from(document.querySelectorAll(s));
-  document.title = ST.TITLE;
+  document.title = `${ST.TITLE} · Teddy & Tommy`;
 
   // ---- saved progress: highest floor reached, easy mode, best score ----
   const SAVE_KEY = 'snowTT.save';

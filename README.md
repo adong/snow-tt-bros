@@ -2,6 +2,10 @@
 
 [![Snow TT Bros title screen](docs/screenshot.jpg)](https://adong.github.io/snow-tt-bros/)
 
+Snow the zombies into giant snowballs and roll them away. 20 floors, 1 or 2 players.
+
+**中文：** 把僵尸冻成大雪球，滚起来撞倒一大片！20 层，单人或双人。
+
 Press **?** any time (or tap the round **?** button on the left edge) to see the keys. The game waits while you look.
 Tap the language button under it (the A文 icon) to switch between English and 中文; the dashboard and every game remember the choice.
 
@@ -110,7 +114,7 @@ On the title screen, tap a card: **TEDDY** or **TOMMY** for 1 player, or **BOTH!
   - Each floor also has a `name`, a `theme` (`yard`, `toys`, `ice`, `castle`), an optional `tip` shown at the start, `potions` (how many drop) and `boss` (`zombo`, `robo`, `fluff`, `castle`).
 - **After editing a floor, run the check:** `node tools/check.js` (or `game.check()` in the browser console). It tells you if a ledge can't be reached, something starts inside a wall, and so on.
 - **The feel** is set by `TUNE` (jump, speed, throw range, snowball speed, visit length...), `MODES` (normal and easy), `KINDS` (the baddies) and `BOSSES` at the top of `js/sim.js`.
-- **The name** lives in one place: `ST.TITLE` in `js/title.js` (the page title and the logo both come from it). It's a working title; other ideas: "FrosTTy Bros", "SnowbaTTle Bros", "LoTTa Snow".
+- **The name** lives in one place: `ST.TITLE` in `js/title.js` (the page title and the logo both come from it).
 
 ## How it works, and how it's tested
 

@@ -1,4 +1,3 @@
-/* The game's name, in one place (page title, title screen, README). Working title; ideas: "FrosTTy Bros",
-   "SnowbaTTle Bros", "LoTTa Snow". */
+/* The game's name, in one place (page title, title screen, README). Alan named it. */
 window.ST = window.ST || {};
 ST.TITLE = 'Snow TT Bros';
