@@ -2,6 +2,8 @@
 
 [![Snow TT Bros title screen](docs/screenshot.jpg)](https://adong.github.io/snow-tt-bros/)
 
+Press **?** any time (or tap the round **?** button on the left edge) to see the keys. The game waits while you look.
+
 A single-screen snowball platformer starring Teddy and Tommy, built with Claude Code from plain JavaScript and Three.js on the shared Claude Games kit.
 Climb a tower of 20 snowy floors. On each floor you snow the silly baddies until they turn into big snowballs, then kick the snowballs so they roll and bounce down the ledges, bonking every baddy they hit.
 There's a boss every fifth floor. It's best with two brothers on one keyboard, and in 1-player mode the other brother drops in whenever you call him.
