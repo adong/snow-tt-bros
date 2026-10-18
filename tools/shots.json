@@ -1,0 +1,25 @@
+[
+  { "label": "setup", "js": "game.keepAwake(); game.calm(); game.freeze(); game.step(1.5); 'title'", "shot": "1-title" },
+
+  { "label": "companion", "js": "game.start({mode:'1p', hero:'teddy', floor:1}); game.step(2.2); var w=game.world, p=w.players[0]; Object.assign(p,{x:8.5,y:7,vy:0,face:1}); game.step(0.1); game.buddy(); for (var i=0;i<200;i++){ game.step(1/60); var b=w.buddy; if (b.cstate==='hello' && b.t>0.62) break; } game.step(0.25); 'buddy ' + w.buddy.cstate", "shot": "2-companion-treat" },
+
+  { "label": "saved", "js": "var w=game.world, p=w.players[0]; game.step(1.0); var z=w.enemies[0]; Object.assign(z,{x:p.x+0.3,y:p.y,vy:0,state:'walk',snow:0}); game.step(4/60); game.step(0.1); 'lives ' + p.lives + ' shield ' + p.shield", "shot": "3-tommy-saved-you" },
+
+  { "label": "combo", "js": "game.title(); game.start({mode:'1p', hero:'teddy', floor:9}); game.step(2.2); var w=game.world; var tp=w.enemies.reduce(function(a,e){return e.y>a.y?e:a;}); w.encase(tp, w.players[0]); var p=w.players[0]; Object.assign(p,{x:tp.x-1.3,y:tp.y,vy:0,face:1}); game.step(0.05); var keyEv=function(t,c){window.dispatchEvent(new KeyboardEvent(t,{code:c}));}; keyEv('keydown','KeyF'); game.step(1/60); keyEv('keyup','KeyF'); var n=0; for (var i=0;i<400;i++){ game.step(1/60); if (w.combos>0) { n++; if (n>14) break; } } 'combos ' + w.combos + ' score ' + p.score", "shot": "4-snowball-combo" },
+
+  { "label": "boss", "js": "game.title(); game.start({mode:'1p', hero:'tommy', floor:5}); game.step(3.2); game.auto(); game.god(); var w=game.world; for (var i=0;i<3600;i++){ game.step(1/60); if (w.boss.state==='hurt' && w.boss.t>0.15) break; } for (var k=0;k<6 && !game.view.views.get(w.boss.uid).model.visible;k++) game.step(1/60); 'boss hp ' + w.boss.hp", "shot": "5-boss-giant-zombo" },
+
+  { "label": "coop", "js": "game.title(); game.start({mode:'2p', floor:3}); game.god(); game.step(2.2); var w=game.world, a=w.players[0], b=w.players[1]; Object.assign(a,{x:4.5,y:7,vy:0,face:1}); Object.assign(b,{x:15.5,y:7,vy:0,face:-1}); var zs=w.enemies.filter(function(e){return e.state==='walk';}); Object.assign(zs[0],{x:9.4,y:7,vy:0,face:-1,snow:3}); Object.assign(zs[1],{x:11.6,y:7,vy:0,face:1,snow:2}); game.step(0.05); var keyEv=function(t,c){window.dispatchEvent(new KeyboardEvent(t,{code:c}));}; keyEv('keydown','KeyF'); keyEv('keydown','KeyL'); game.step(1/60); keyEv('keyup','KeyF'); keyEv('keyup','KeyL'); game.step(0.12); 'shots ' + w.shots.length", "shot": "6-two-players" },
+
+  { "label": "highfive", "js": "var w=game.world; game.step(0.6); w.hi5Cd=0; w.highFive(); game.step(0.4); 'hi5 ' + w.players[0].state", "shot": "7-high-five" },
+
+  { "label": "celebrate", "js": "game.title(); game.start({mode:'2p', floor:2}); game.step(2.2); var w=game.world, a=w.players[0], b=w.players[1]; Object.assign(a,{x:10,y:7,vy:0}); Object.assign(b,{x:13.5,y:7,vy:0}); var c={n:0,owner:a,id:999}; w.enemies.slice().forEach(function(e){ w.ko(e,c,1); }); game.step(2.4); game.step(1.25); w.phase", "shot": "8-floor-clear-celebration" },
+
+  { "label": "castle", "js": "game.title(); game.start({mode:'2p', floor:20}); game.step(3.2); game.auto(); game.god(); game.step(5); 'boss ' + game.world.boss.hp", "shot": "9-king-grumpcastle" },
+
+  { "label": "ghost", "js": "game.title(); game.start({mode:'1p', hero:'tommy', floor:11}); game.god(); game.step(2.2); var w=game.world; w.time=44; game.step(6.5); 'ghost ' + !!w.ghost", "shot": "10-hurry-ghost" },
+
+  { "label": "ipad", "size": [1024, 768], "js": "game.title(); game.setTouch(true); game.start({mode:'1p', hero:'tommy', floor:7}); game.step(2.5); game.buddy(); game.step(2.4); 'touch'", "shot": "11-ipad-touch-companion" },
+
+  { "label": "ipad2p", "js": "game.title(); game.start({mode:'2p', floor:16}); game.step(4.5); 'touch 2p'", "shot": "12-ipad-two-players-touch" }
+]

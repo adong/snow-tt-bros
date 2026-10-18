@@ -10,6 +10,11 @@
   const HALF = Math.PI / 2;
   const lerp = (a, b, k) => a + (b - a) * k;
   const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+  // free the GPU buffers of something we're done with (textures are shared and cached, so they stay)
+  const disposeTree = (obj) => obj.traverse((o) => {
+    if (o.geometry) o.geometry.dispose();
+    if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => m.dispose());
+  });
 
   const THEME_LIGHT = {
     yard: { sky: '#dff0ff', ground: '#8a7a6a', hemi: 0.95, sun: '#fff4e0', sunI: 1.15, fog: '#cfe7ff', flakes: '#ffffff' },
@@ -219,7 +224,7 @@
       const f = world.f, theme = world.def.theme || 'yard';
       const { W, H } = ST.TUNE;
       this.theme = theme;
-      for (const o of this.level.children.slice()) this.level.remove(o);
+      for (const o of this.level.children.slice()) { this.level.remove(o); disposeTree(o); }
       for (const v of this.views.values()) v.dispose && v.dispose();
       this.views.clear();
       const L = THEME_LIGHT[theme];
@@ -247,7 +252,7 @@
       };
       const R = art.prng(world.floorN * 31 + 7);
       // the ground, running off both sides of the screen
-      addBox(80, 1, 6, blockMat, W / 2, 0.5, -1.5, [80, 1, 6]);
+      addBox(80, 21, 6, blockMat, W / 2, -9.5, -1.5, [80, 21, 6]);
       addBox(80, 0.2, 6.1, snowMat, W / 2, 1.02, -1.5, [20, 1, 3]);
       // outside walls, taller than the screen
       for (const x of [0.5, W - 0.5]) {
@@ -368,7 +373,7 @@
       v.ph = 0;
       v.celebT = 0;
       v.lastBeat = -1;
-      v.dispose = () => this.scene.remove(v.g);
+      v.dispose = () => { this.scene.remove(v.g); disposeTree(v.g); };
       return v;
     }
 
@@ -483,7 +488,7 @@
       v.eyes.visible = false;
       v.g.add(v.eyes);
       v.stars = this.starRing(v.g, e.type === 'gremlin' ? 1.15 : 1.45, 3, 0.26);
-      v.dispose = () => this.scene.remove(v.g);
+      v.dispose = () => { this.scene.remove(v.g); disposeTree(v.g); };
       return v;
     }
 
@@ -578,7 +583,7 @@
       v.ph = 0;
       v.rotY = -0.5;
       v.stars = this.starRing(v.g, B.h + 0.5, 5, 0.5);
-      v.dispose = () => this.scene.remove(v.g);
+      v.dispose = () => { this.scene.remove(v.g); disposeTree(v.g); };
       return v;
     }
 
@@ -631,7 +636,7 @@
       let v = this.views.get('ghost');
       if (!v) {
         const m = A().buildGhost();
-        v = { g: m.root, m, kind: 'ghost', dispose: () => this.scene.remove(m.root) };
+        v = { g: m.root, m, kind: 'ghost', dispose: () => { this.scene.remove(m.root); disposeTree(m.root); } };
         this.scene.add(m.root);
         this.views.set('ghost', v);
         v.born = this.time;
@@ -781,7 +786,7 @@
           break;
         case 'potion':
           P.burst(e.x, e.y + 0.4, { n: 26, color: [ST.POTIONS[e.potion].color, '#ffffff'], speed: 4, size: 0.32 });
-          F.add(art.textTexture(e.label, ST.POTIONS[e.potion].color), e.p.x, e.p.y + 2.3, { size: 4, aspect: 0.25, life: 1.2, vy: 0.8, z: 1.8 });
+          if (!e.auto) F.add(art.textTexture(e.label, ST.POTIONS[e.potion].color), e.p.x, e.p.y + 2.3, { size: 4, aspect: 0.25, life: 1.2, vy: 0.8, z: 1.8 });
           break;
         case 'dizzy':
           F.add(art.burstTexture('BONK!', '#ffb02e'), e.p.x, e.p.y + 1.5, { size: 1.5, life: 0.5, vy: 0.4, z: 1.6 });
@@ -813,7 +818,7 @@
           F.add(emojiTexture('✋'), a.x, a.y + 2.2, { size: 0.9, life: 0.9, vy: 0.5, z: 1.7 });
           F.add(emojiTexture('🤚'), b.x, b.y + 2.2, { size: 0.9, life: 0.9, vy: 0.5, z: 1.7 });
           for (const p of [a, b]) P.burst(p.x, p.y + 1, { n: 30, color: ['#ffe14d', '#ffffff', '#ff8ad8'], speed: 5, size: 0.35 });
-          F.add(art.textTexture('HIGH FIVE!', '#ffd23f'), x, y + 0.6, { size: 5, aspect: 0.25, life: 1.2, vy: 0.5, z: 1.8 });
+          P.burst(x, y, { n: 20, color: ['#ffe14d', '#ffffff'], speed: 6, size: 0.3 });
           break;
         }
         case 'balloonPop':

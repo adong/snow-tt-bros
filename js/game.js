@@ -269,7 +269,7 @@
         G.pickT = G.clock;
         sfx.pickup(G.pickStreak);
         break;
-      case 'potion': sfx.potion(); toast(`🧪 ${e.label}`, 'big', 1.8); break;
+      case 'potion': sfx.potion(); if (!e.auto) toast(`🧪 ${e.label}`, 'big', 1.8); break;
       case 'dizzy': sfx.dizzy(); flashCard(e.p); break;
       case 'saved': sfx.saved(); toast(`${NAME[e.by] || 'YOUR BROTHER'} SAVED YOU!`, 'big', 2.2); break;
       case 'hurry': sfx.hurry(); banner('HURRY UP!', 'hurry', 1.6); break;
@@ -422,6 +422,7 @@
     const two = !!(G.world && G.world.twoP);
     $('.tset.s0').classList.toggle('solo', !two);
     $('.tset.s1').classList.toggle('hidden', !two);
+    document.body.classList.toggle('touch2', two && G.touch);
   }
 
   document.addEventListener('visibilitychange', () => {

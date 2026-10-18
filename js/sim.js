@@ -485,7 +485,7 @@
           p.state = 'cheer'; p.vx = 0; p.balloonT = 0;
         }
         if (this.buddy && this.buddy.cstate === 'play') { this.buddy.state = 'cheer'; }
-        for (const it of this.items) { this.collect(this.nearestPlayer(it.x, it.y) || this.players[0], it); }
+        for (const it of this.items) { this.collect(this.nearestPlayer(it.x, it.y) || this.players[0], it, true); }
         this.items = [];
         this.ev({ t: 'celebrate', n: this.floorN });
       } else if (this.phase === 'celebrate' && this.phaseT > TUNE.celebrate) {
@@ -919,14 +919,15 @@
       this.items = this.items.filter((i) => !i.dead);
     }
 
-    collect(p, it) {
+    // auto: swept up at the end of a floor (quietly, no big labels)
+    collect(p, it, auto) {
       it.dead = true;
       if (it.what === 'potion') {
         if (it.potion === 'balloon') {
           if (p.state === 'play' || p.state === 'balloon') { p.state = 'balloon'; p.balloonT = TUNE.balloon; p.vy = 2; }
         } else p.powers[it.potion] = true;
         this.credit(p, 500);
-        this.ev({ t: 'potion', p, potion: it.potion, label: POTIONS[it.potion].label, x: it.x, y: it.y });
+        this.ev({ t: 'potion', p, potion: it.potion, label: POTIONS[it.potion].label, x: it.x, y: it.y, auto: !!auto });
       } else {
         this.credit(p, it.pts);
         this.ev({ t: 'pickup', p, emoji: it.emoji, pts: it.pts, x: it.x, y: it.y });
