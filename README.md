@@ -3,6 +3,7 @@
 [![Snow TT Bros title screen](docs/screenshot.jpg)](https://adong.github.io/snow-tt-bros/)
 
 Press **?** any time (or tap the round **?** button on the left edge) to see the keys. The game waits while you look.
+Tap **中文 / EN** under it to switch between English and 中文 (the dashboard and every game remember the choice).
 
 A single-screen snowball platformer starring Teddy and Tommy, built with Claude Code from plain JavaScript and Three.js on the shared Claude Games kit.
 Climb a tower of 20 snowy floors. On each floor you snow the silly baddies until they turn into big snowballs, then kick the snowballs so they roll and bounce down the ledges, bonking every baddy they hit.
@@ -156,6 +157,7 @@ js/sfx.js           the game's own synth sounds (poof, roll, bonk, combo, boss h
 js/art.js           canvas paintings and textures, gremlin / snow monster / castle / ghost-snowman models
 js/view.js          Three.js scene: floors, characters, snow, particles, comic bursts, camera
 js/game.js          screens, input, HUD, companion button, events to sounds and banners, test hooks
+js/zh.js            中文: the dictionary and rules for every word the player sees (Kit.lang, kit/lang.js)
 tools/check.js      node tools/check.js: the headless floor check
 tools/shoot.js      headless-Chrome screenshots (tools/shots.json -> docs/)
 docs/               screenshots

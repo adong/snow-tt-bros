@@ -9,6 +9,8 @@
   const { makeCanvas, toTexture, shade, roundRect, std, mesh, FONT } = G;
   const cache = {};
   const once = (key, fn) => cache[key] || (cache[key] = fn());
+  // words drawn on canvases never reach the page, so they're translated here (English or 中文, kit/lang.js)
+  const tr = (s) => (Kit.lang ? Kit.lang.t(s) : s);
 
   // a tiny seeded random so the paintings look the same every time
   function prng(seed) { let s = seed; return () => ((s = (s * 16807) % 2147483647) - 1) / 2147483646; }
@@ -286,6 +288,7 @@
 
   // comic burst with a word: POW!, BONK!, POOF!...
   function burstTexture(word, fill = '#ffd23f') {
+    word = tr(word);
     return once('burst' + word + fill, () => {
       const [c, g] = makeCanvas(256, 256);
       g.translate(128, 128);
@@ -304,6 +307,7 @@
 
   // outlined text for floating scores and words
   function textTexture(text, color = '#ffffff') {
+    text = tr(text);
     return once('text' + text + color, () => {
       const [c, g] = makeCanvas(512, 128);
       g.font = `64px ${FONT}`; g.textAlign = 'center'; g.textBaseline = 'middle';
@@ -343,6 +347,7 @@
   }
 
   function bubbleTexture(text) {
+    text = tr(text);
     return once('bubble' + text, () => {
       const [c, g] = makeCanvas(256, 128);
       g.fillStyle = '#ffffff'; g.strokeStyle = '#14121f'; g.lineWidth = 6;

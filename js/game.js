@@ -211,14 +211,14 @@
     const btn = $('#buddyBtn');
     if (w.twoP) {
       const cd = w.hi5Cd / w.M.hi5Cd;
-      set('cd', Math.ceil(w.hi5Cd), (v) => { btn.querySelector('.lbl').innerHTML = v > 0 ? `HIGH FIVE<br>IN ${v}` : 'HIGH<br>FIVE!'; });
+      set('cd', Math.ceil(w.hi5Cd), (v) => { btn.querySelector('.lbl').textContent = v > 0 ? `HIGH FIVE IN ${v}` : 'HIGH FIVE!'; });
       btn.querySelector('.cool').style.setProperty('--cd', `${Math.round(cd * 100)}%`);
       set('here', w.hi5Cd <= 0, (v) => btn.classList.toggle('here', v));
       set('bar', false, () => $('#buddyBar').classList.add('hidden'));
     } else {
       const b = w.buddy, left = w.buddyLeft();
       const name = NAME[other(w.players[0].id)];
-      set('lbl', (b ? 'more' : 'call') + name, () => { btn.querySelector('.lbl').innerHTML = b ? 'ANOTHER<br>TREAT!' : `CALL<br>${name}`; });
+      set('lbl', (b ? 'more' : 'call') + name, () => { btn.querySelector('.lbl').textContent = b ? 'ANOTHER TREAT!' : `CALL ${name}`; });
       btn.querySelector('.cool').style.setProperty('--cd', '0%');
       set('here', !!b && left > 0, (v) => btn.classList.toggle('here', v));
       set('bar', left > 0, (v) => $('#buddyBar').classList.toggle('hidden', !v));
@@ -306,7 +306,7 @@
       case 'gameOver':
         after(1.2, () => {
           if (G.state !== 'play') return;
-          $('#overFloor').textContent = w.floorN;
+          $('#overSub').textContent = `Out of lives on floor ${w.floorN}. Snowballs never give up!`;
           $('#overScores').innerHTML = scoresHtml(w);
           setScreen('over');
           S.music('over');

@@ -91,7 +91,8 @@
   #buddyBtn .ring .two img { width: 50%; object-fit: cover; }
   #buddyBtn .cool { position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(rgba(10,20,40,0.65) var(--cd, 0%), transparent 0); }
   #buddyBtn .key { position: absolute; right: 2px; bottom: 26px; background: var(--yellow); color: var(--ink); font-family: var(--display); font-size: 13px; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; border: 3px solid var(--ink); }
-  #buddyBtn .lbl { font-family: var(--display); font-size: 12px; line-height: 1.05; text-align: center; text-shadow: 0 2px 0 rgba(0,0,0,0.55); }
+  #buddyBtn .lbl { font-family: var(--display); font-size: 12px; line-height: 1.05; text-align: center; text-shadow: 0 2px 0 rgba(0,0,0,0.55); max-width: 92px; }
+  html.lang-zh #buddyBtn .lbl { font-family: 'Rubik', system-ui, sans-serif; font-weight: 800; font-size: 13px; }
   #buddyBtn.here .ring { animation: glow 1s infinite alternate; border-color: var(--yellow); }
   @keyframes glow { to { box-shadow: 0 6px 0 rgba(0,0,0,0.25), 0 0 22px 8px rgba(255,210,63,0.85); } }
   #buddyBar { position: absolute; right: max(12px, env(safe-area-inset-right)); top: 232px; display: flex; align-items: center; gap: 6px; transition: opacity 0.25s; }
@@ -189,7 +190,7 @@
   .scores b { color: var(--yellow); }
   @media (max-height: 520px) {
     .pcard .face { width: 40px; height: 40px; }
-    #buddyBtn { top: 70px; width: 90px; } #buddyBtn .ring { width: 70px; height: 70px; } #buddyBar { top: 180px; }
+    #buddyBtn { top: 86px; width: 90px; } #buddyBtn .ring { width: 66px; height: 66px; } #buddyBar { top: 190px; }
     .tpad { width: 160px; height: 80px; } .tb { width: 72px; height: 72px; font-size: 30px; } .tb.throw { width: 82px; height: 82px; }
     .card .pics { height: 70px; } .keys { display: none; }
   }
@@ -221,7 +222,7 @@
 
 <div id="title" class="screen">
   <div>
-    <div class="logo" id="logo"></div>
+    <div class="logo" id="logo" data-no-lang></div>
     <div class="sub">Snow the baddies · roll them up · bowl them over! 20 floors to the top.</div>
   </div>
   <div class="cards" id="cards">
@@ -235,7 +236,7 @@
       <span class="chip" id="optFloor"><button class="arr" id="floorDown" aria-label="Lower floor">◀</button><span>FLOOR 1</span><button class="arr" id="floorUp" aria-label="Higher floor">▶</button></span>
       <button class="chip" id="optMute">🔊</button>
     </div>
-    <div class="keys" style="margin-top:10px">
+    <div class="keys" style="margin-top:10px" data-zh="单人：<kbd>←</kbd><kbd>→</kbd> 或 <kbd>A</kbd><kbd>D</kbd> 走 · <kbd>↑</kbd> <kbd>W</kbd> <kbd>空格</kbd> 跳 · <kbd>F</kbd> <kbd>L</kbd> <kbd>J</kbd> 扔雪球 / 踢雪球 · <kbd>T</kbd> 叫兄弟来帮忙<br>双人：Teddy 用 <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> + <kbd>F</kbd> · Tommy 用方向键 + <kbd>L</kbd> · <kbd>T</kbd> 击掌 · <kbd>P</kbd> 暂停 · <kbd>M</kbd> 声音">
       1 player: <kbd>←</kbd><kbd>→</kbd> or <kbd>A</kbd><kbd>D</kbd> move · <kbd>↑</kbd> <kbd>W</kbd> <kbd>Space</kbd> jump · <kbd>F</kbd> <kbd>L</kbd> <kbd>J</kbd> throw snow / kick · <kbd>T</kbd> call your brother<br>
       2 players: Teddy <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> + <kbd>F</kbd> · Tommy arrows + <kbd>L</kbd> · <kbd>T</kbd> high five · <kbd>P</kbd> pause · <kbd>M</kbd> sound
     </div>
@@ -249,7 +250,7 @@
 
 <div id="over" class="screen dim hidden">
   <div class="scr-title">OOPS!</div>
-  <div class="scr-sub">Out of lives on floor <span id="overFloor">1</span>. Snowballs never give up!</div>
+  <div class="scr-sub" id="overSub">Out of lives on floor 1. Snowballs never give up!</div>
   <div class="scores" id="overScores"></div>
   <div class="row-btns"><button class="big-btn" id="btnContinue">KEEP GOING!</button><button class="big-btn alt" id="btnOverQuit">TITLE</button></div>
 </div>
@@ -267,6 +268,7 @@
 <script src="kit/roster.js"></script>
 <script src="kit/portraits.js"></script>
 <script src="kit/sound.js"></script>
+<script src="kit/lang.js"></script>
 <script src="kit/help.js"></script>
 <script src="js/title.js"></script>
 <script src="js/floors.js"></script>
@@ -278,5 +280,6 @@
 <script src="js/view.js"></script>
 <script src="js/game.js"></script>
 <script src="js/keys.js"></script>
+<script src="js/zh.js"></script>
 </body>
 </html>
