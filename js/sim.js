@@ -1107,9 +1107,17 @@
       switch (b.cstate) {
         case 'enter':
           if (b.ghostFall) {
+            // float down next to his brother, following him if he runs off
             b.vy = Math.max(b.vy - TUNE.gravity * 0.6 * dt, -12);
             b.y += b.vy * dt;
-            if (b.y <= Math.max(1, main.y + 0.4)) { b.ghostFall = false; unstick(this.f, b); }
+            const tx = clamp(main.x - main.face * 1.1, 1.6, TUNE.W - 1.6);
+            b.x += (tx - b.x) * Math.min(1, dt * 5);
+            if (b.y <= Math.max(1, main.y + 0.4)) {
+              b.ghostFall = false;
+              const r = rowOfY(b.y + 0.5);
+              if (this.f.solid(Math.floor(b.x), r) || this.f.solid(Math.floor(b.x), r - 1)) b.x = main.x;
+              unstick(this.f, b);
+            }
           } else {
             b.vx = 0;
             moveBody(this.f, b, dt);

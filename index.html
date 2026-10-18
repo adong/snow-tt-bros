@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#16365f">
+<title></title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #14121f;
+    --snow: #ffffff;
+    --ice: #bfe3ff;
+    --blue: #2a5d9f;
+    --deep: #16365f;
+    --teddy: #4a86cf;
+    --teddy-l: #8cc2ff;
+    --tommy: #34d6a4;
+    --tommy-l: #9ff0c8;
+    --yellow: #ffd23f;
+    --red: #ff4d5e;
+    --display: 'Bungee', 'Arial Black', Impact, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%; overflow: hidden; background: var(--deep); color: #fff;
+    font-family: 'Rubik', system-ui, -apple-system, sans-serif;
+    touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+  }
+  #view { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  .hidden { opacity: 0 !important; pointer-events: none !important; visibility: hidden; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  img { -webkit-user-drag: none; }
+  body.calm *, body.calm *::before, body.calm *::after { animation: none !important; transition: none !important; }
+
+  /* ---------- HUD ---------- */
+  #hud { position: fixed; inset: 0; pointer-events: none; transition: opacity 0.25s; }
+  .pcard {
+    position: absolute; top: max(8px, env(safe-area-inset-top)); display: flex; align-items: center; gap: 8px;
+    background: rgba(12, 28, 52, 0.62); border: 3px solid rgba(255, 255, 255, 0.92); border-radius: 22px;
+    padding: 4px 14px 4px 4px; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  }
+  .pcard.p1 { left: max(10px, env(safe-area-inset-left)); border-color: var(--teddy-l); }
+  .pcard.p2 { right: max(10px, env(safe-area-inset-right)); border-color: var(--tommy-l); flex-direction: row-reverse; padding: 4px 4px 4px 14px; text-align: right; }
+  .pcard .face { width: 52px; height: 52px; border-radius: 50%; background: radial-gradient(circle at 50% 35%, #fff, var(--ice)); object-fit: cover; }
+  .pcard.tommy .face { background: radial-gradient(circle at 50% 35%, #fff, var(--tommy-l)); }
+  .pcard .name { font-family: var(--display); font-size: 15px; line-height: 1; letter-spacing: 0.5px; }
+  .pcard .row { display: flex; gap: 8px; align-items: center; margin-top: 3px; }
+  .pcard.p2 .row { flex-direction: row-reverse; }
+  .pcard .hearts { font-size: 15px; letter-spacing: -2px; white-space: nowrap; }
+  .pcard .score { font-family: var(--display); font-size: 17px; color: var(--yellow); text-shadow: 0 2px 0 rgba(0,0,0,0.35); min-width: 54px; }
+  .pcard .powers { display: flex; gap: 3px; margin-top: 2px; min-height: 18px; }
+  .pcard.p2 .powers { justify-content: flex-end; }
+  .pcard .powers i { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #fff; display: inline-grid; place-items: center; font-style: normal; font-size: 10px; }
+  .pcard.out { opacity: 0.55; }
+  .pcard.hit { animation: shakeX 0.4s; }
+  @keyframes shakeX { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+  .topmid { position: absolute; top: max(8px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  #floorTag {
+    font-family: var(--display); font-size: 17px; background: rgba(12, 28, 52, 0.62); border: 3px solid #fff; border-radius: 999px;
+    padding: 4px 14px; white-space: nowrap; display: flex; gap: 8px; align-items: center;
+  }
+  #floorTag b { color: var(--yellow); }
+  #floorTag small { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 13px; opacity: 0.85; }
+  .ibtns { display: flex; gap: 6px; pointer-events: auto; }
+  .ibtn { width: 38px; height: 38px; border-radius: 50%; background: rgba(12, 28, 52, 0.62); border: 3px solid #fff; font-size: 15px; display: grid; place-items: center; }
+  #bossBar { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  #bossBar b { font-family: var(--display); font-size: 14px; color: #ffd0d0; text-shadow: 0 2px 0 rgba(0,0,0,0.5); }
+  #bossBar .bar { width: min(320px, 40vw); height: 16px; border-radius: 999px; border: 3px solid #fff; background: rgba(0,0,0,0.45); overflow: hidden; }
+  #bossBar .bar i { display: block; height: 100%; width: 100%; background: linear-gradient(#ff8a8a, #e53935); transition: width 0.3s; }
+  #bossBar.flash .bar { animation: flash 0.3s; }
+  @keyframes flash { 50% { filter: brightness(2.5); transform: scale(1.06); } }
+
+  /* the call-your-brother button: big portrait on the right */
+  #buddyBtn {
+    position: absolute; right: max(12px, env(safe-area-inset-right)); top: 96px; pointer-events: auto;
+    display: flex; flex-direction: column; align-items: center; gap: 4px; width: 110px;
+  }
+  #buddyBtn .ring {
+    position: relative; width: 92px; height: 92px; border-radius: 50%; border: 4px solid #fff; overflow: hidden;
+    background: radial-gradient(circle at 50% 35%, #fff, #ffe1a8); box-shadow: 0 6px 0 rgba(0,0,0,0.25), 0 0 0 0 rgba(255,210,63,0.0);
+    transition: transform 0.12s;
+  }
+  #buddyBtn:active .ring { transform: scale(0.92); }
+  #buddyBtn .ring img { width: 100%; height: 100%; object-fit: cover; }
+  #buddyBtn .ring .two { display: flex; width: 100%; height: 100%; }
+  #buddyBtn .ring .two img { width: 50%; object-fit: cover; }
+  #buddyBtn .cool { position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(rgba(10,20,40,0.65) var(--cd, 0%), transparent 0); }
+  #buddyBtn .key { position: absolute; right: 2px; bottom: 26px; background: var(--yellow); color: var(--ink); font-family: var(--display); font-size: 13px; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; border: 3px solid var(--ink); }
+  #buddyBtn .lbl { font-family: var(--display); font-size: 12px; line-height: 1.05; text-align: center; text-shadow: 0 2px 0 rgba(0,0,0,0.55); }
+  #buddyBtn.here .ring { animation: glow 1s infinite alternate; border-color: var(--yellow); }
+  @keyframes glow { to { box-shadow: 0 6px 0 rgba(0,0,0,0.25), 0 0 22px 8px rgba(255,210,63,0.85); } }
+  #buddyBar { position: absolute; right: max(12px, env(safe-area-inset-right)); top: 232px; display: flex; align-items: center; gap: 6px; transition: opacity 0.25s; }
+  #buddyBar img { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--yellow); background: #fff; }
+  #buddyBar .track { width: 74px; height: 14px; border-radius: 999px; border: 3px solid #fff; background: rgba(0,0,0,0.4); overflow: hidden; }
+  #buddyBar .track i { display: block; height: 100%; background: linear-gradient(#ffe68a, #ffb02e); }
+
+  /* banners and toasts */
+  #banner {
+    position: fixed; left: 50%; top: 38%; transform: translate(-50%, -50%); pointer-events: none; text-align: center;
+    font-family: var(--display); font-size: clamp(34px, 7vw, 76px); line-height: 1; color: #fff; white-space: nowrap;
+    -webkit-text-stroke: 3px var(--ink); text-shadow: 0 6px 0 var(--ink), 0 0 30px rgba(120,190,255,0.8);
+    transition: opacity 0.2s;
+  }
+  #banner small { display: block; font-size: 0.38em; margin-top: 10px; -webkit-text-stroke: 1.5px var(--ink); color: var(--ice); }
+  #banner.pop { animation: pop 0.45s cubic-bezier(.2,1.6,.4,1); }
+  #banner.boss { color: #ffb0b0; }
+  #banner.hurry { color: var(--yellow); }
+  #banner.clear { color: var(--yellow); }
+  @keyframes pop { from { transform: translate(-50%, -50%) scale(0.3); } to { transform: translate(-50%, -50%) scale(1); } }
+  #toasts { position: fixed; left: 50%; top: 52%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
+  .toast {
+    font-family: var(--display); font-size: clamp(16px, 2.6vw, 26px); padding: 8px 18px; border-radius: 999px; white-space: nowrap;
+    background: rgba(12, 28, 52, 0.78); border: 3px solid #fff; text-shadow: 0 2px 0 rgba(0,0,0,0.5); transition: opacity 0.3s, transform 0.3s;
+    animation: toastIn 0.35s cubic-bezier(.2,1.6,.4,1);
+  }
+  .toast.big { font-size: clamp(22px, 4vw, 40px); border-color: var(--yellow); color: var(--yellow); }
+  .toast.treat { border-color: #ffb02e; }
+  .toast.tip { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: clamp(14px, 2vw, 19px); background: rgba(12, 28, 52, 0.62); }
+  #tips { position: fixed; left: 50%; bottom: max(12px, env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; max-width: min(560px, 92vw); }
+  #tips .toast { white-space: normal; text-align: center; }
+  .toast.bye { opacity: 0; transform: translateY(-10px); }
+  @keyframes toastIn { from { transform: scale(0.4); opacity: 0; } }
+
+  /* ---------- touch controls ---------- */
+  #touch { position: fixed; inset: auto 0 0 0; height: 0; pointer-events: none; }
+  .tset { position: absolute; bottom: max(14px, env(safe-area-inset-bottom)); display: flex; gap: 14px; align-items: flex-end; pointer-events: none; }
+  .tset.s0 { left: max(12px, env(safe-area-inset-left)); }
+  .tset.s1 { right: max(12px, env(safe-area-inset-right)); }
+  .tset.solo.s0 { right: max(12px, env(safe-area-inset-right)); justify-content: space-between; }
+  .tpad {
+    pointer-events: auto; position: relative; width: 190px; height: 96px; border-radius: 48px; background: rgba(12, 28, 52, 0.45);
+    border: 3px solid rgba(255,255,255,0.75); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; font-size: 34px;
+  }
+  .tpad span { opacity: 0.85; transition: transform 0.08s; }
+  .tpad span.on { transform: scale(1.3); opacity: 1; }
+  .tpad .d { font-size: 20px; align-self: flex-end; margin-bottom: 8px; }
+  .tbtns { display: flex; gap: 12px; align-items: flex-end; }
+  .tb {
+    pointer-events: auto; width: 88px; height: 88px; border-radius: 50%; border: 4px solid #fff; font-size: 36px; display: grid; place-items: center;
+    background: rgba(12, 28, 52, 0.5); box-shadow: 0 5px 0 rgba(0,0,0,0.3); transition: transform 0.06s;
+  }
+  .tb.throw { width: 100px; height: 100px; background: rgba(42, 93, 159, 0.7); }
+  .tb.on { transform: scale(0.9); background: rgba(255,255,255,0.35); }
+  .tset.s0 .tb.throw { border-color: var(--teddy-l); }
+  .tset.s1 .tb.throw { border-color: var(--tommy-l); }
+  .tset.s1 { flex-direction: row-reverse; }
+  .tset.s1 .tbtns { flex-direction: row-reverse; }
+
+  /* ---------- screens ---------- */
+  .screen { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 18px; transition: opacity 0.3s; text-align: center; }
+  .screen.dim { background: rgba(10, 22, 44, 0.62); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+  #title { background: linear-gradient(rgba(10,30,60,0.75), rgba(10,30,60,0.15) 34%, rgba(10,30,60,0.15) 58%, rgba(10,30,60,0.8)); justify-content: space-between; padding: max(18px, env(safe-area-inset-top)) 18px max(14px, env(safe-area-inset-bottom)); }
+  .logo { font-family: var(--display); font-size: clamp(44px, 9vw, 104px); line-height: 0.95; color: #fff; -webkit-text-stroke: 4px var(--ink); text-shadow: 0 7px 0 var(--ink), 0 0 40px rgba(150,210,255,0.9); letter-spacing: 1px; }
+  .logo .t1 { color: var(--teddy-l); } .logo .t2 { color: var(--tommy-l); }
+  .sub { font-weight: 800; font-size: clamp(14px, 2vw, 19px); color: var(--ice); text-shadow: 0 2px 0 rgba(0,0,0,0.5); margin-top: 8px; }
+  .cards { display: flex; gap: clamp(10px, 2vw, 22px); flex-wrap: wrap; justify-content: center; }
+  .card {
+    width: clamp(130px, 19vw, 190px); padding: 10px 8px 12px; border-radius: 24px; background: rgba(12, 28, 52, 0.7); border: 4px solid rgba(255,255,255,0.85);
+    display: flex; flex-direction: column; align-items: center; gap: 6px; box-shadow: 0 6px 0 rgba(0,0,0,0.3); transition: transform 0.12s, border-color 0.12s;
+  }
+  .card .pics { display: flex; justify-content: center; height: clamp(84px, 12vw, 118px); }
+  .card .pics img { height: 100%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 50% 35%, #fff, var(--ice)); }
+  .card .pics img + img { margin-left: -22px; background: radial-gradient(circle at 50% 35%, #fff, var(--tommy-l)); }
+  .card b { font-family: var(--display); font-size: clamp(15px, 2vw, 21px); }
+  .card small { font-weight: 800; font-size: 12px; color: var(--ice); letter-spacing: 1px; }
+  .card.sel { border-color: var(--yellow); transform: translateY(-6px) scale(1.04); }
+  .card:active { transform: scale(0.96); }
+  .opts { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; align-items: center; }
+  .chip { font-family: var(--display); font-size: 15px; padding: 8px 14px; border-radius: 999px; background: rgba(12, 28, 52, 0.7); border: 3px solid #fff; display: inline-flex; gap: 8px; align-items: center; }
+  .chip.on { background: var(--yellow); color: var(--ink); border-color: var(--ink); }
+  .chip .arr { font-size: 13px; padding: 0 4px; }
+  .keys { font-weight: 700; font-size: 13px; color: var(--ice); line-height: 1.6; text-shadow: 0 1px 0 rgba(0,0,0,0.6); }
+  .keys kbd { font-family: inherit; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.5); border-radius: 5px; padding: 0 5px; color: #fff; }
+  .big-btn { font-family: var(--display); font-size: clamp(20px, 3vw, 28px); padding: 12px 30px; border-radius: 999px; background: var(--yellow); color: var(--ink); border: 4px solid var(--ink); box-shadow: 0 6px 0 var(--ink); }
+  .big-btn.alt { background: rgba(255,255,255,0.9); }
+  .big-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--ink); }
+  .scr-title { font-family: var(--display); font-size: clamp(36px, 7vw, 72px); line-height: 1; -webkit-text-stroke: 3px var(--ink); text-shadow: 0 6px 0 var(--ink); }
+  .scr-sub { font-weight: 800; font-size: clamp(15px, 2.2vw, 21px); color: var(--ice); }
+  .row-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+  .scores { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
+  .scores div { font-family: var(--display); font-size: 20px; background: rgba(12, 28, 52, 0.7); border: 3px solid #fff; border-radius: 18px; padding: 8px 16px; display: flex; gap: 10px; align-items: center; }
+  .scores img { width: 46px; height: 46px; border-radius: 50%; background: #fff; }
+  .scores b { color: var(--yellow); }
+  @media (max-height: 520px) {
+    .pcard .face { width: 40px; height: 40px; }
+    #buddyBtn { top: 70px; width: 90px; } #buddyBtn .ring { width: 70px; height: 70px; } #buddyBar { top: 180px; }
+    .tpad { width: 160px; height: 80px; } .tb { width: 72px; height: 72px; font-size: 30px; } .tb.throw { width: 82px; height: 82px; }
+    .card .pics { height: 70px; } .keys { display: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="view"></canvas>
+
+<div id="hud" class="hidden">
+  <div class="pcard p1" id="p1"><img class="face" alt=""><div class="info"><div class="name"></div><div class="row"><span class="hearts"></span><span class="score">0</span></div><div class="powers"></div></div></div>
+  <div class="pcard p2 hidden" id="p2"><img class="face" alt=""><div class="info"><div class="name"></div><div class="row"><span class="hearts"></span><span class="score">0</span></div><div class="powers"></div></div></div>
+  <div class="topmid">
+    <div id="floorTag"><b>1</b><span></span></div>
+    <div id="bossBar" class="hidden"><b></b><div class="bar"><i></i></div></div>
+    <div class="ibtns"><button class="ibtn" id="btnPause" aria-label="Pause">❚❚</button><button class="ibtn" id="btnMute" aria-label="Sound">🔊</button></div>
+  </div>
+  <button id="buddyBtn" aria-label="Call your brother"><div class="ring"><img alt=""><div class="cool"></div></div><span class="key">T</span><span class="lbl">CALL TOMMY</span></button>
+  <div id="buddyBar" class="hidden"><img alt=""><div class="track"><i></i></div></div>
+</div>
+
+<div id="banner" class="hidden"></div>
+<div id="toasts"></div>
+<div id="tips"></div>
+
+<div id="touch" class="hidden">
+  <div class="tset s0" data-slot="0"><div class="tpad"><span class="l">◀</span><span class="d">▼</span><span class="r">▶</span></div><div class="tbtns"><button class="tb jump" aria-label="Jump">⬆️</button><button class="tb throw" aria-label="Throw">❄️</button></div></div>
+  <div class="tset s1" data-slot="1"><div class="tpad"><span class="l">◀</span><span class="d">▼</span><span class="r">▶</span></div><div class="tbtns"><button class="tb jump" aria-label="Jump">⬆️</button><button class="tb throw" aria-label="Throw">❄️</button></div></div>
+</div>
+
+<div id="title" class="screen">
+  <div>
+    <div class="logo" id="logo"></div>
+    <div class="sub">Snow the baddies · roll them up · bowl them over! 20 floors to the top.</div>
+  </div>
+  <div class="cards" id="cards">
+    <button class="card sel" data-mode="1p" data-hero="teddy"><div class="pics"><img data-face="teddy" alt=""></div><b>TEDDY</b><small>1 PLAYER</small></button>
+    <button class="card" data-mode="1p" data-hero="tommy"><div class="pics"><img data-face="tommy" alt=""></div><b>TOMMY</b><small>1 PLAYER</small></button>
+    <button class="card" data-mode="2p"><div class="pics"><img data-face="teddy" alt=""><img data-face="tommy" alt=""></div><b>BOTH!</b><small>2 PLAYERS</small></button>
+  </div>
+  <div>
+    <div class="opts">
+      <button class="chip" id="optEasy">🐣 EASY</button>
+      <span class="chip" id="optFloor"><button class="arr" id="floorDown" aria-label="Lower floor">◀</button><span>FLOOR 1</span><button class="arr" id="floorUp" aria-label="Higher floor">▶</button></span>
+      <button class="chip" id="optMute">🔊</button>
+    </div>
+    <div class="keys" style="margin-top:10px">
+      1 player: <kbd>←</kbd><kbd>→</kbd> or <kbd>A</kbd><kbd>D</kbd> move · <kbd>↑</kbd> <kbd>W</kbd> <kbd>Space</kbd> jump · <kbd>F</kbd> <kbd>L</kbd> <kbd>J</kbd> throw snow / kick · <kbd>T</kbd> call your brother<br>
+      2 players: Teddy <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> + <kbd>F</kbd> · Tommy arrows + <kbd>L</kbd> · <kbd>T</kbd> high five · <kbd>P</kbd> pause · <kbd>M</kbd> sound
+    </div>
+  </div>
+</div>
+
+<div id="pause" class="screen dim hidden">
+  <div class="scr-title">PAUSED</div>
+  <div class="row-btns"><button class="big-btn" id="btnResume">KEEP PLAYING</button><button class="big-btn alt" id="btnQuit">TITLE</button></div>
+</div>
+
+<div id="over" class="screen dim hidden">
+  <div class="scr-title">OOPS!</div>
+  <div class="scr-sub">Out of lives on floor <span id="overFloor">1</span>. Snowballs never give up!</div>
+  <div class="scores" id="overScores"></div>
+  <div class="row-btns"><button class="big-btn" id="btnContinue">KEEP GOING!</button><button class="big-btn alt" id="btnOverQuit">TITLE</button></div>
+</div>
+
+<div id="win" class="screen dim hidden">
+  <div class="scr-title">YOU DID IT!</div>
+  <div class="scr-sub">King Grumpcastle is bonked and the snowy tower is safe!</div>
+  <div class="scores" id="winScores"></div>
+  <div class="row-btns"><button class="big-btn" id="btnAgain">PLAY AGAIN</button></div>
+</div>
+
+<script src="kit/three.min.js"></script>
+<script src="kit/gfx.js"></script>
+<script src="kit/people.js"></script>
+<script src="kit/roster.js"></script>
+<script src="kit/portraits.js"></script>
+<script src="kit/sound.js"></script>
+<script src="js/title.js"></script>
+<script src="js/floors.js"></script>
+<script src="js/sim.js"></script>
+<script src="js/check.js"></script>
+<script src="js/poses.js"></script>
+<script src="js/sfx.js"></script>
+<script src="js/art.js"></script>
+<script src="js/view.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
